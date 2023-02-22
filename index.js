@@ -86,9 +86,13 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
      sharpenValue =parseInt(req.body.Svalue)
      rotateAngle =parseInt(req.body.angle)
 
+     const grayscale = req.body.grayscale;
+     const flipflop = req.body.flipflop;
+
 
      if (req.file){
           // console.log(req.file.path);
+          // console.log(flipflop);
 
 
           if(isNaN(width) || isNaN(height)){
@@ -110,6 +114,21 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
 
           }
        }
+
+       if(req.file){
+
+        if (grayscale === "true") {
+          convertTograyscale(req, res);
+          console.log(grayscale);
+        }
+
+        if (flipflop === "flip") {
+          flipImage(req,res);
+          console.log(flipflop);
+
+        }
+
+       }
 })
 app.listen(PORT, () => {
   console.log(`App is listening on Port ${PORT}`);
@@ -117,15 +136,14 @@ app.listen(PORT, () => {
 
 function processImage(width,height,blurValue,req,res){
 
-
-    outputFilePath = Date.now() + "output." + format;
+ 
     if (req.file) {
+      outputFilePath = Date.now() + "output." + format;
       sharp(req.file.path)
         .resize(width, height)
         .blur(blurValue)
         .sharpen(sharpenValue)
         .rotate(rotateAngle)
-        .grayscale()
         .toFile(outputFilePath, (err, info) => {
           if (err) throw err;
           res.download(outputFilePath, (err) => {
@@ -134,5 +152,37 @@ function processImage(width,height,blurValue,req,res){
             fs.unlinkSync(outputFilePath);
           });
         });
+    }
+  }
+
+  function convertTograyscale(req,res){
+    if(req.file){
+      outputFilePath = Date.now() + "output." + format;
+      sharp(req.file.path)
+      .grayscale()
+      .toFile(outputFilePath, (err, info) => {
+        if (err) throw err;
+        res.download(outputFilePath, (err) => {
+          if (err) throw err;
+          fs.unlinkSync(req.file.path);
+          fs.unlinkSync(outputFilePath);
+        });
+      });
+    }
+  }
+
+  function flipImage(req,res){
+    if(req.file){
+      outputFilePath = Date.now() + "output." + format;
+      sharp(req.file.path)
+      .flip()
+      .toFile(outputFilePath, (err, info) => {
+        if (err) throw err;
+        res.download(outputFilePath, (err) => {
+          if (err) throw err;
+          fs.unlinkSync(req.file.path);
+          fs.unlinkSync(outputFilePath);
+        });
+      });
     }
   }
