@@ -92,7 +92,6 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
 
      if (req.file){
           // console.log(req.file.path);
-          // console.log(flipflop);
 
 
           if(isNaN(width) || isNaN(height)){
@@ -144,14 +143,14 @@ function processImage(width,height,blurValue,req,res){
         .blur(blurValue)
         .sharpen(sharpenValue)
         .rotate(rotateAngle)
-        .toFile(outputFilePath, (err, info) => {
+        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
           if (err) throw err;
-          res.download(outputFilePath, (err) => {
-            if (err) throw err;
+          // res.download(outputFilePath, (err) => {
+          //   if (err) throw err;
             fs.unlinkSync(req.file.path);
             fs.unlinkSync(outputFilePath);
           });
-        });
+        // });
     }
   }
 
@@ -160,14 +159,14 @@ function processImage(width,height,blurValue,req,res){
       outputFilePath = Date.now() + "output." + format;
       sharp(req.file.path)
       .grayscale()
-      .toFile(outputFilePath, (err, info) => {
+      .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
         if (err) throw err;
-        res.download(outputFilePath, (err) => {
-          if (err) throw err;
+        // res.download(outputFilePath, (err) => {
+        //   if (err) throw err;
           fs.unlinkSync(req.file.path);
           fs.unlinkSync(outputFilePath);
         });
-      });
+      // });
     }
   }
 
@@ -176,13 +175,13 @@ function processImage(width,height,blurValue,req,res){
       outputFilePath = Date.now() + "output." + format;
       sharp(req.file.path)
       .flip()
-      .toFile(outputFilePath, (err, info) => {
+      .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
         if (err) throw err;
-        res.download(outputFilePath, (err) => {
-          if (err) throw err;
+        // res.download(outputFilePath, (err) => {
+        //   if (err) throw err;
           fs.unlinkSync(req.file.path);
           fs.unlinkSync(outputFilePath);
         });
-      });
+      // });
     }
   }
