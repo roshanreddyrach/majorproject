@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm i express image-size multer nodemon sharp",
     "start": "node index.js",
     "devStart": "nodemon index.js"
   },
