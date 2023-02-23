@@ -26,8 +26,6 @@ const fs = require('fs');
 
 const path = require('path');
 
-var zip =require('express-zip');
-
 var dir = "public";
 var subDirectory = "public/uploads";
 
@@ -137,19 +135,6 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
         }
 
        }
-       res.zip([
-        {
-          path:'processed_images/1output.png' , name: `1output.${format}`
-        },
-        {
-          path:'processed_images/2output.png' , name: `2output.${format}`
-
-        },
-        {
-          path:'processed_images/3output.png' , name: `3output.${format}`
-
-        }
-       ])
 })
 app.listen(PORT, () => {
   console.log(`App is listening on Port ${PORT}`);
@@ -158,7 +143,6 @@ app.listen(PORT, () => {
 function processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res){
 
     if (req.file) {
-    //  const outputFilePath = Date.now() + "output." + format;
     let index = 1;
       outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
@@ -169,18 +153,12 @@ function processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res){
         .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
           if (err) throw err;
           res.download(__dirname + '/processed_images/'+ outputFilePath)
-          //  (err) => {
-            // if (err) throw err;
-            // fs.unlinkSync(req.file.path);
-            // fs.unlinkSync(__dirname + '/processed_images/'+ outputFilePath);
-          // });
         });
     }
   }
 
   function convertTograyscale(req,res){
     if(req.file){
-    //  const outputFilePath = Date.now() + "output." + format;
     let index = 2;
    outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
@@ -188,18 +166,12 @@ function processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res){
       .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
         if (err) throw err;
         res.download(__dirname + '/processed_images/'+ outputFilePath)
-        // , (err) => {
-        //   if (err) throw err;
-          // fs.unlinkSync(req.file.path);
-          // fs.unlinkSync(__dirname + '/processed_images/'+ outputFilePath);
         });
-      // });
     }
   }
 
   function flipImage(req,res){
     if(req.file){
-    //  const outputFilePath = Date.now() + "output." + format;
     let index = 3;
    outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
@@ -207,17 +179,11 @@ function processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res){
       .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
         if (err) throw err;
         res.download(__dirname + '/processed_images/'+ outputFilePath)
-        // , (err) => {
-        //   if (err) throw err;
-          fs.unlinkSync(req.file.path);
-          // fs.unlinkSync(__dirname + '/processed_images/'+ outputFilePath);
         });
-      // });
     }
   }
   function flopImage(req,res){
     if(req.file){
-    //  const outputFilePath = Date.now() + "output." + format;
     let index = 4;
    outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
@@ -225,11 +191,6 @@ function processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res){
       .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
         if (err) throw err;
         res.download(__dirname + '/processed_images/'+ outputFilePath)
-        // , (err) => {
-        //   if (err) throw err;
-          fs.unlinkSync(req.file.path);
-          // fs.unlinkSync(__dirname + '/processed_images/'+ outputFilePath);
         });
-      // });
     }
   }
