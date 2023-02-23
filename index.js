@@ -133,14 +133,14 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
        }
        res.zip([
         {
-          path:'/processed_images' , name: `1output.${format}`
+          path:'processed_images/1output.png' , name: `1output.${format}`
         },
         {
-          path:'/processed_images' , name: `1output.${format}`
+          path:'processed_images/2output.png' , name: `2output.${format}`
 
         },
         {
-          path:'/processed_images' , name: `1output.${format}`
+          path:'processed_images/3output.png' , name: `3output.${format}`
 
         }
        ])
