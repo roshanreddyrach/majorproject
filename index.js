@@ -2,6 +2,8 @@ const express = require("express");
 const multer = require('multer');
 const sharp = require('sharp');
 
+
+
 var width;
 
 var format;
@@ -24,6 +26,7 @@ const fs = require('fs');
 
 const path = require('path');
 
+var zip =require('express-zip');
 
 var dir = "public";
 var subDirectory = "public/uploads";
@@ -128,6 +131,19 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
         }
 
        }
+       res.zip([
+        {
+          path:'/processed_images' , name: `1output.${format}`
+        },
+        {
+          path:'/processed_images' , name: `1output.${format}`
+
+        },
+        {
+          path:'/processed_images' , name: `1output.${format}`
+
+        }
+       ])
 })
 app.listen(PORT, () => {
   console.log(`App is listening on Port ${PORT}`);
@@ -135,9 +151,11 @@ app.listen(PORT, () => {
 
 function processImage(width,height,blurValue,req,res){
 
- 
+
     if (req.file) {
-      outputFilePath = Date.now() + "output." + format;
+    //  const outputFilePath = Date.now() + "output." + format;
+    let index = 1;
+      outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
         .resize(width, height)
         .blur(blurValue)
@@ -156,7 +174,9 @@ function processImage(width,height,blurValue,req,res){
 
   function convertTograyscale(req,res){
     if(req.file){
-      outputFilePath = Date.now() + "output." + format;
+    //  const outputFilePath = Date.now() + "output." + format;
+    let index = 2;
+   outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
       .grayscale()
       .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
@@ -172,7 +192,9 @@ function processImage(width,height,blurValue,req,res){
 
   function flipImage(req,res){
     if(req.file){
-      outputFilePath = Date.now() + "output." + format;
+    //  const outputFilePath = Date.now() + "output." + format;
+    let index = 3;
+   outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
       .flip()
       .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
