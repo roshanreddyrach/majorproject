@@ -25,43 +25,82 @@
             class="form-control"
           />
         </div>
-        Choose Format:
+        <span>Choose Format:</span>
         <label class="radio-inline">
           <input type="radio" name="format" value="png" checked />png</label>
         <label class="radio-inline">
           <input type="radio" name="format" value="jpg" />jpg</label>
         <label class="radio-inline">
-          <input type="radio" name="format" value="webp" />webp</label>
+          <input type="radio" name="format" value="webp" />webp</label> <br />
+        <span>Resize:</span>
         <div class="form-group">
-          <label for="width">Width</label>
+          <label for="width">width</label>
           <input class="form-control" type="number" name="width" id="" />
         </div>
         <div class="form-group">
-          <label for="height">Height</label>
+          <label for="height">height</label>
           <input class="form-control" type="number" name="height" id="" />
         </div>
-        Choose Operation:
+        <span>Choose Operation:</span>
         <label class="radio-inline">
           <input id="grayscale" type="checkbox" name="grayscale" value="true"  />grayscale</label>
         <label class="radio-inline">
           <input id="flip" type="radio" name="flipflop" value="flip" />flip</label>
         <label class="radio-inline">
           <input id="flop" type="radio" name="flipflop" value="flop" />flop</label> <br />
-        Blur:
+       <span>Blur:</span>
         <div class="form-group">
           <label for="Bvalue">value</label>
           <input class="form-control" type="number" name="Bvalue" id="" />
         </div> <br />
-        Sharpen:
+        <spam>Sharpen:</spam>
         <div class="form-group">
           <label for="Svalue">value</label>
           <input class="form-control" type="number" name="Svalue" id="" />
         </div> <br />
-        Rotate:
+        <span>Rotate:</span>
         <div class="form-group">
           <label for="angle">angle</label>
           <input class="form-control" type="number" name="angle" id="" />
+        </div> <br />
+        <span>croping:</span>
+        <div class="form-group">
+          <label for="left">Left Cropping Space</label>
+          <input type="number" name="LeftCropingSpace" id="" />
         </div>
+        <div class="form-group">
+          <label for="croppedWidth">Cropped width</label>
+          <input type="number" name="croppedWidth" id="" />
+        </div>
+        <div class="form-group">
+          <label for="croppedHeight">Cropped height</label>
+          <input type="number" name="croppedHeight" id="" />
+        </div>
+        <div class="form-group">
+          <label for="top">Top Cropping Space</label>
+          <input type="number" name="TopCropingSpace" id="" />
+        </div> <br />
+        <span>Text overlay on image :</span>
+        <div class="form-group">
+          <label for="inputText">Text Field</label>
+          <input type="text" name="inputText" id="">
+        </div>
+        <!-- <div class="form-group">
+          <label for="txtColor">Text Color</label>
+          <input type="text" name="txtColor" id="">
+        </div>
+        <div class="form-group">
+          <label for="fontSize">fontSize</label>
+          <input type="number" name="fontSize" id="" />
+        </div>
+        <div class="form-group">
+          <label for="moveLeft">move from left</label>
+          <input type="number" name="moveLeft" id="">
+        </div>
+        <div class="form-group">
+          <label for="moveTop">move from top</label>
+          <input type="number" name="moveTop" id="">
+        </div> -->
         <div class="form-group">
           <button class="btn btn-danger btn-block">Download Image</button>
         </div>

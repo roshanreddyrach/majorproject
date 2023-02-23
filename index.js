@@ -5,18 +5,22 @@ const sharp = require('sharp');
 
 
 var width;
-
 var format;
-
 var outputFilePath;
-
 var height;
-
 var blurValue;
-
 var sharpenValue;
-
 var rotateAngle;
+var LCroppingSpace;
+var CroppedWidth;
+var CroppedHeight;
+var TCroppingSpace;
+var InputText;
+var TxtColor;
+var FontSize;
+var MoveLeft;
+var MoveTop;
+
 
 const imageSize = require('image-size');
 
@@ -83,12 +87,24 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
      format = req.body.format;
      width = parseInt(req.body.width);
      height = parseInt(req.body.height);
-     blurValue =parseInt(req.body.Bvalue)
-     sharpenValue =parseInt(req.body.Svalue)
-     rotateAngle =parseInt(req.body.angle)
+     blurValue = parseInt(req.body.Bvalue);
+     sharpenValue = parseInt(req.body.Svalue);
+     rotateAngle = parseInt(req.body.angle);
 
      const grayscale = req.body.grayscale;
      const flipflop = req.body.flipflop;
+
+
+     LCroppingSpace = parseInt(req.body.LeftCropingSpace);
+     CroppedWidth = parseInt(req.body.croppedWidth);
+     CroppedHeight = parseInt(req.body.croppedHeight)
+     TCroppingSpace = parseInt(req.body.TopCropingSpace);
+
+     InputText = req.body.inputText;
+     TxtColor = req.body.txtColor;
+     FontSize = parseInt(req.body.fontSize);
+     MoveLeft = parseInt(req.body.moveLeft);
+     MoveTop = parseInt(req.body.moveTop);
 
 
      if (req.file){
@@ -104,14 +120,14 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
             width = parseInt(dimensions.width);
             height = parseInt(dimensions.height);
 
-            processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res);
+            resizeImage(width,height,req,res);
+            console.log(width,height);
 
           }
           else{
 
-            processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res);
-
-
+            resizeImage(width,height,req,res);
+            console.log(width,height);
           }
        }
 
@@ -134,28 +150,53 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
 
         }
 
+        if(blurValue){
+          blurImage(blurValue,req,res);
+          console.log(blurValue);
+        }
+
+        if(sharpenValue){
+          sharpenImage(sharpenValue,req,res);
+          console.log(sharpenValue);
+        }
+
+        if(rotateAngle){
+          rotateImage(rotateAngle,req,res);
+          console.log(rotateAngle);
+        }
+
+        if(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace){
+          cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,res);
+          console.log(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace);
+        }
+
+        if(InputText,TxtColor,FontSize,MoveLeft,MoveTop){
+          addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res);
+          console.log(InputText,TxtColor,FontSize,MoveLeft,MoveTop);
+        }
+
+
+
        }
 })
 app.listen(PORT, () => {
   console.log(`App is listening on Port ${PORT}`);
 });
 
-function processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res){
+function resizeImage(width,height,req,res){
 
     if (req.file) {
     let index = 1;
       outputFilePath = `${index}output.${format}`;
       sharp(req.file.path)
         .resize(width, height)
-        .blur(blurValue)
-        .sharpen(sharpenValue)
-        .rotate(rotateAngle)
         .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
           if (err) throw err;
           res.download(__dirname + '/processed_images/'+ outputFilePath)
         });
     }
   }
+
 
   function convertTograyscale(req,res){
     if(req.file){
@@ -194,3 +235,97 @@ function processImage(width,height,blurValue,sharpenValue,rotateAngle,req,res){
         });
     }
   }
+
+  function blurImage(blurValue,req,res){
+
+    if(req.file){
+      if(req.file){
+        let index = 5;
+       outputFilePath = `${index}output.${format}`;
+          sharp(req.file.path)
+          .blur(blurValue)
+          .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+            if (err) throw err;
+            res.download(__dirname + '/processed_images/'+ outputFilePath)
+            });
+    }
+  }
+}
+
+function sharpenImage(sharpenValue,req,res){
+
+  if(req.file){
+    if(req.file){
+      let index = 6;
+     outputFilePath = `${index}output.${format}`;
+        sharp(req.file.path)
+        .sharpen(sharpenValue)
+        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+          if (err) throw err;
+          res.download(__dirname + '/processed_images/'+ outputFilePath)
+          });
+  }
+}
+}
+
+function rotateImage(rotateAngle,req,res){
+
+  if(req.file){
+    if(req.file){
+      let index = 7;
+     outputFilePath = `${index}output.${format}`;
+        sharp(req.file.path)
+        .rotate(rotateAngle)
+        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+          if (err) throw err;
+          res.download(__dirname + '/processed_images/'+ outputFilePath)
+          });
+  }
+}
+}
+
+
+function cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,res){
+  if(req.file){
+    if(req.file){
+      let index = 8;
+     outputFilePath = `${index}output.${format}`;
+        sharp(req.file.path)
+        .extract({left: LCroppingSpace, width: CroppedWidth, height: CroppedHeight, top: TCroppingSpace})
+        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+          if (err) throw err;
+          res.download(__dirname + '/processed_images/'+ outputFilePath)
+          });
+  }
+}
+}
+
+
+function addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res){
+  if(req.file){
+    if(req.file){
+      let index = 9;
+     outputFilePath = `${index}output.${format}`;
+
+        const txtwidth = 400;
+        const txtheight = 100;
+
+        const svgText = `
+        <svg width="${txtwidth}" height="${txtheight}" viewBox="0 0 100 100">
+          <style>
+            .title { fill:"${TxtColor}" ; font-size:"${FontSize}px"}
+          </style>
+          <text x="5%" y="40%" text-anchor="start" class="title">${InputText}</text>
+        </svg>`
+
+        const svgBuffer = Buffer.from(svgText);
+        sharp(req.file.path)
+        .composite([{input: svgBuffer, left: MoveLeft, top: MoveTop}])
+        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+          if (err) throw err;
+          res.download(__dirname + '/processed_images/'+ outputFilePath)
+          });
+  }
+}
+}
+
