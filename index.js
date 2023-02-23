@@ -22,6 +22,11 @@ var MoveLeft;
 var MoveTop;
 
 
+var redValue;
+var greenValue;
+var blueValue;
+
+
 const imageSize = require('image-size');
 
 const bodyParser = require('body-parser');
@@ -107,6 +112,11 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
      MoveTop = parseInt(req.body.moveTop);
 
 
+     redValue = parseInt(req.body.rvalue);
+     blueValue = parseInt(req.body.gvalue);
+     greenValue = parseInt(req.body.bvalue);
+
+
      if (req.file){
           // console.log(req.file.path);
 
@@ -170,11 +180,21 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
           console.log(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace);
         }
 
-        if(InputText,TxtColor,FontSize,MoveLeft,MoveTop){
-          addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res);
-          console.log(InputText,TxtColor,FontSize,MoveLeft,MoveTop);
+        // if(InputText,TxtColor,FontSize,MoveLeft,MoveTop){
+        //   addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res);
+        //   console.log(InputText,TxtColor,FontSize,MoveLeft,MoveTop);
+        // }
+
+        if(InputText){
+          addText(InputText,req,res);
+          console.log(InputText);
         }
 
+        if(redValue,greenValue,blueValue,req,res){
+          tintImage( redValue,greenValue,blueValue,req,res);
+          console.log( tintImage( redValue,greenValue,blueValue))
+
+        }
 
 
        }
@@ -301,7 +321,36 @@ function cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,
 }
 
 
-function addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res){
+// function addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res){
+//   if(req.file){
+//     if(req.file){
+//       let index = 9;
+//      outputFilePath = `${index}output.${format}`;
+
+//         const txtwidth = 400;
+//         const txtheight = 100;
+
+//         const svgText = `
+//         <svg width="${txtwidth}" height="${txtheight}" viewBox="0 0 100 100">
+//           <style>
+//             .title { fill:"${TxtColor}" ; font-size:"${FontSize}px"}
+//           </style>
+//           <text x="5%" y="40%" text-anchor="start" class="title">${InputText}</text>
+//         </svg>`
+
+//         const svgBuffer = Buffer.from(svgText);
+//         sharp(req.file.path)
+//         .composite([{input: svgBuffer, left: MoveLeft, top: MoveTop}])
+//         .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+//           if (err) throw err;
+//           res.download(__dirname + '/processed_images/'+ outputFilePath)
+//           });
+//   }
+// }
+// }
+
+
+function addText(InputText,req,res){
   if(req.file){
     if(req.file){
       let index = 9;
@@ -313,14 +362,14 @@ function addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res){
         const svgText = `
         <svg width="${txtwidth}" height="${txtheight}" viewBox="0 0 100 100">
           <style>
-            .title { fill:"${TxtColor}" ; font-size:"${FontSize}px"}
+            .title { fill:"purple" ; font-size:"20px"}
           </style>
           <text x="5%" y="40%" text-anchor="start" class="title">${InputText}</text>
         </svg>`
 
         const svgBuffer = Buffer.from(svgText);
         sharp(req.file.path)
-        .composite([{input: svgBuffer, left: MoveLeft, top: MoveTop}])
+        .composite([{input: svgBuffer, left: 10, top: 20}])
         .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
           if (err) throw err;
           res.download(__dirname + '/processed_images/'+ outputFilePath)
@@ -329,3 +378,17 @@ function addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res){
 }
 }
 
+function tintImage( redValue,greenValue,blueValue,req,res){
+  if(req.file){
+    if(req.file){
+      let index = 10;
+     outputFilePath = `${index}output.${format}`;
+        sharp(req.file.path)
+        .tint({r: redValue, g: greenValue, b: blueValue})
+        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+          if (err) throw err;
+          res.download(__dirname + '/processed_images/'+ outputFilePath)
+          });
+  }
+}
+}
