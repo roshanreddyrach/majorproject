@@ -53,7 +53,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.use(express.static("public"));
+// app.use(express.static("public"));
 
 
 var storage = multer.diskStorage({
@@ -98,6 +98,7 @@ app.get("/", (req, res) => {
 });
 
 app.post('/processed_images',upload.single('file'),(req,res) => {
+
   let index = 1;
   const filePath = req.file.path;
   const processedDir = __dirname + '/processed_images';
@@ -250,7 +251,7 @@ app.get('/download_all', (req, res) => {
       console.log('Directory permissions changed successfully');
     }
   });
-  
+
   const processedDir = __dirname + '/processed_images';
   const zipFilePath = __dirname + '/zipFolder/processed_images.zip';
 
@@ -278,6 +279,13 @@ app.get('/download_all', (req, res) => {
       console.log('File download successful');
       // delete the zip file from the server after sending it to the client
       fs.unlinkSync(zipFilePath);
+
+      // delete the processed_images directory after the zip file is downloaded
+      if (fs.existsSync(processedDir)) {
+        console.log('Deleting processed_images directory...');
+        fs.rmdirSync(processedDir, { recursive: true });
+        console.log('processed_images directory deleted.');
+      }
     }
   });
 });
