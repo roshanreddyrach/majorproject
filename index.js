@@ -232,6 +232,11 @@ app.get('/download_all', (req, res) => {
   const processedDir = __dirname + '/processed_images';
   const zipFilePath = __dirname + '/processed_images.zip';
 
+  if (!fs.existsSync(processedDir)) {
+    fs.mkdirSync(processedDir);
+  }
+
+
   // create a zip file of all images in the processed_images directory
   const archive = archiver('zip', { zlib: { level: 9 } });
   archive.directory(processedDir, false);
