@@ -91,7 +91,7 @@ var storage = multer.diskStorage({
     }
   });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
@@ -126,6 +126,8 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
 
      const grayscale = req.body.grayscale;
      const flipflop = req.body.flipflop;
+
+     const dummy = req.body.dummy;
 
 
      LCroppingSpace = parseInt(req.body.LeftCropingSpace);
@@ -224,25 +226,50 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
 
         }
 
+        if (dummy === "true") {
+          dummyImage(req,res);
+          console.log(dummy);
+        }
+
+
        }
+
 })
 
 // download all processed images as a zip file
 app.get('/download_all', (req, res) => {
+ const zipFolder = __dirname +'/zipFolder'
+  if (!fs.existsSync(zipFolder)) {
+    fs.mkdirSync(zipFolder);
+  }
+
+  fs.chmod('E:/webdev/project/mainProject/majorproject/zipFolder', 0o777, (err) => {
+    if (err) {
+      console.error('Error changing directory permissions:', err);
+    } else {
+      console.log('Directory permissions changed successfully');
+    }
+  });
+  
   const processedDir = __dirname + '/processed_images';
-  const zipFilePath = __dirname + '/processed_images.zip';
+  const zipFilePath = __dirname + '/zipFolder/processed_images.zip';
 
   if (!fs.existsSync(processedDir)) {
     fs.mkdirSync(processedDir);
   }
 
+  if (!fs.existsSync(zipFilePath)) {
+    console.log('Creating processed_images.zip file...');
 
   // create a zip file of all images in the processed_images directory
   const archive = archiver('zip', { zlib: { level: 9 } });
   archive.directory(processedDir, false);
   archive.pipe(fs.createWriteStream(zipFilePath));
   archive.finalize();
-
+  console.log('processed_images.zip file created.');
+} else {
+  console.log('processed_images.zip file already exists.');
+}
   // send the zip file to the client for download
   res.download(zipFilePath, (err) => {
     if (err) {
@@ -286,25 +313,26 @@ function resizeImage(width,height,req,res){
           if (err) {
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
-          } else {
-            console.log('resizeImage processed successfully');
+          } 
+          //  else {
+            // console.log('addtext Image processed successfully');
             // send the processed image back to the client
-            res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
-                console.log('File sent successfully');
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
                 // delete the processed image from the server
                 // fs.unlinkSync(processedFilePath);
-              }
-            });
-          }
+          //     }
+          //   });
+          // }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
         });
+      }
     }
-  }
 
 
   function convertTograyscale(req,res){
@@ -333,25 +361,26 @@ function resizeImage(width,height,req,res){
         if (err) {
           console.error('Error processing image:', err);
           res.status(500).send('Error processing image');
-        } else {
-          console.log('grayscaleImage processed successfully');
-          // send the processed image back to the client
-          res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-            if (err) {
-              console.error('Error sending file:', err);
-              res.status(500).send('Error sending file');
-            } else {
-              console.log('File sent successfully');
-              // delete the processed image from the server
-              // fs.unlinkSync(processedFilePath);
-            }
-          });
-        }
-        // delete the uploaded image from the server
-        // fs.unlinkSync(filePath);
-      });
-  }
-}
+        } 
+        //  else {
+            // console.log('addtext Image processed successfully');
+            // send the processed image back to the client
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
+                // delete the processed image from the server
+                // fs.unlinkSync(processedFilePath);
+          //     }
+          //   });
+          // }
+          // delete the uploaded image from the server
+          // fs.unlinkSync(filePath);
+        });
+      }
+    }
 
   function flipImage(req,res){
     if(req.file){
@@ -378,25 +407,28 @@ function resizeImage(width,height,req,res){
         if (err) {
           console.error('Error processing image:', err);
           res.status(500).send('Error processing image');
-        } else {
-          console.log('flipImage processed successfully');
-          // send the processed image back to the client
-          res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-            if (err) {
-              console.error('Error sending file:', err);
-              res.status(500).send('Error sending file');
-            } else {
-              console.log('File sent successfully');
-              // delete the processed image from the server
-              // fs.unlinkSync(processedFilePath);
-            }
-          });
-        }
-        // delete the uploaded image from the server
-        // fs.unlinkSync(filePath);
-      });
-  }
-}
+        } 
+        //  else {
+            // console.log('addtext Image processed successfully');
+            // send the processed image back to the client
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
+                // delete the processed image from the server
+                // fs.unlinkSync(processedFilePath);
+          //     }
+          //   });
+          // }
+          // delete the uploaded image from the server
+          // fs.unlinkSync(filePath);
+        });
+      }
+    }
+
+
   function flopImage(req,res){
     if(req.file){
       var dir = "public";
@@ -423,25 +455,26 @@ function resizeImage(width,height,req,res){
         if (err) {
           console.error('Error processing image:', err);
           res.status(500).send('Error processing image');
-        } else {
-          console.log('flopImage processed successfully');
-          // send the processed image back to the client
-          res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-            if (err) {
-              console.error('Error sending file:', err);
-              res.status(500).send('Error sending file');
-            } else {
-              console.log('File sent successfully');
-              // delete the processed image from the server
-              // fs.unlinkSync(processedFilePath);
-            }
-          });
-        }
-        // delete the uploaded image from the server
-        // fs.unlinkSync(filePath);
-      });
-  }
-}
+        } 
+        //  else {
+            // console.log('addtext Image processed successfully');
+            // send the processed image back to the client
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
+                // delete the processed image from the server
+                // fs.unlinkSync(processedFilePath);
+          //     }
+          //   });
+          // }
+          // delete the uploaded image from the server
+          // fs.unlinkSync(filePath);
+        });
+      }
+    }
 
   function blurImage(blurValue,req,res){
       if(req.file){
@@ -469,23 +502,24 @@ function resizeImage(width,height,req,res){
             if (err) {
               console.error('Error processing image:', err);
               res.status(500).send('Error processing image');
-            } else {
-              console.log('blurImage processed successfully');
-              // send the processed image back to the client
-              res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-                if (err) {
-                  console.error('Error sending file:', err);
-                  res.status(500).send('Error sending file');
-                } else {
-                  console.log('File sent successfully');
-                  // delete the processed image from the server
-                  // fs.unlinkSync(processedFilePath);
-                }
-              });
-            }
-            // delete the uploaded image from the server
-            // fs.unlinkSync(filePath);
-          });
+            } 
+            //  else {
+            // console.log('addtext Image processed successfully');
+            // send the processed image back to the client
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
+                // delete the processed image from the server
+                // fs.unlinkSync(processedFilePath);
+          //     }
+          //   });
+          // }
+          // delete the uploaded image from the server
+          // fs.unlinkSync(filePath);
+        });
       }
     }
 
@@ -516,25 +550,26 @@ function sharpenImage(sharpenValue,req,res){
           if (err) {
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
-          } else {
-            console.log('sharpenImage processed successfully');
+          } 
+          //  else {
+            // console.log('addtext Image processed successfully');
             // send the processed image back to the client
-            res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
-                console.log('File sent successfully');
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
                 // delete the processed image from the server
                 // fs.unlinkSync(processedFilePath);
-              }
-            });
-          }
+          //     }
+          //   });
+          // }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
         });
+      }
     }
-  }
 
 function rotateImage(rotateAngle,req,res){
     if(req.file){
@@ -562,25 +597,26 @@ function rotateImage(rotateAngle,req,res){
           if (err) {
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
-          } else {
-            console.log('rotateImage processed successfully');
+          } 
+          //  else {
+            // console.log('addtext Image processed successfully');
             // send the processed image back to the client
-            res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
-                console.log('File sent successfully');
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
                 // delete the processed image from the server
                 // fs.unlinkSync(processedFilePath);
-              }
-            });
-          }
+          //     }
+          //   });
+          // }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
         });
+      }
     }
-  }
 
 
 function cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,res){
@@ -609,26 +645,26 @@ function cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,
           if (err) {
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
-          } else {
-            console.log('cropImage processed successfully');
+          }
+          //  else {
+            // console.log('addtext Image processed successfully');
             // send the processed image back to the client
-            res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
-                console.log('File sent successfully');
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
                 // delete the processed image from the server
                 // fs.unlinkSync(processedFilePath);
-              }
-            });
-          }
+          //     }
+          //   });
+          // }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
         });
+      }
     }
-  }
-
 
 // function addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res){
 //     if(req.file){
@@ -696,20 +732,21 @@ function addText(InputText,req,res){
           if (err) {
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
-          } else {
-            console.log('addtext Image processed successfully');
+          }
+          //  else {
+            // console.log('addtext Image processed successfully');
             // send the processed image back to the client
-            res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
-                console.log('File sent successfully');
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
                 // delete the processed image from the server
                 // fs.unlinkSync(processedFilePath);
-              }
-            });
-          }
+          //     }
+          //   });
+          // }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
         });
@@ -742,22 +779,70 @@ function tintImage( redValue,greenValue,blueValue,req,res){
           if (err) {
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
-          } else {
-            console.log('tintImage processed successfully');
+          } 
+          //  else {
+            // console.log('addtext Image processed successfully');
             // send the processed image back to the client
-            res.sendFile(__dirname + '/imageProcessed.html', (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
-                console.log('File sent successfully');
+            // res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+              // if (err) {
+                // console.error('Error sending file:', err);
+                // res.status(500).send('Error sending file');
+              // } else {
+                // console.log('File sent successfully');
                 // delete the processed image from the server
                 // fs.unlinkSync(processedFilePath);
-              }
-            });
-          }
+          //     }
+          //   });
+          // }
           // delete the uploaded image from the server
-          fs.unlinkSync(filePath);
+          // fs.unlinkSync(filePath);
         });
+      }
     }
+
+
+  function dummyImage(req,res){
+    if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+
+  //  outputFilePath = `${index}output.${format}`;
+  const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName ='processed_image' + `dummyoutput.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
+      sharp(req.file.path)
+      .grayscale()
+      // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+      //   if (err) throw err;
+      //   });
+      .toFile(processedFilePath, (err, info) => {
+        if (err) {
+          console.error('Error processing image:', err);
+          res.status(500).send('Error processing image');
+        } 
+        else {
+          console.log('Image processed successfully');
+          // send the processed image back to the client
+          res.sendFile(__dirname + '/imageProcessed.html', (err) => {
+            if (err) {
+              console.error('Error sending file:', err);
+              res.status(500).send('Error sending file');
+            } else {
+              console.log('File sent successfully');
+              // delete the processed image from the server
+              fs.unlinkSync(processedFilePath);
+            }
+          });
+        }
+        // delete the uploaded image from the server
+        fs.unlinkSync(filePath);
+      });
   }
+}
