@@ -280,12 +280,18 @@ app.get('/download_all', (req, res) => {
       // delete the zip file from the server after sending it to the client
       fs.unlinkSync(zipFilePath);
 
-      // delete the processed_images directory after the zip file is downloaded
-      if (fs.existsSync(processedDir)) {
-        console.log('Deleting processed_images directory...');
-        fs.rmdirSync(processedDir, { recursive: true });
-        console.log('processed_images directory deleted.');
-      }
+    // delete the processed_images directory after the zip file is downloaded
+if (fs.existsSync(processedDir)) {
+  console.log('Deleting processed_images directory...');
+  fs.rm(processedDir, { recursive: true }, (err) => {
+    if (err) {
+      console.error('Error deleting processed_images directory:', err);
+    } else {
+      console.log('processed_images directory deleted.');
+    }
+  });
+}
+
     }
   });
 });
