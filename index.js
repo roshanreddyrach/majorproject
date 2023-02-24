@@ -83,7 +83,7 @@ var storage = multer.diskStorage({
 
   var upload = multer({ storage: storage, fileFilter: imageFilter });
 
-  fs.chmod('E:/webdev/project/mainProject/majorproject/public/uploads', 0o777, (err) => {
+  fs.chmod(__dirname + '/public/uploads', 0o777, (err) => {
     if (err) {
       console.error('Error changing directory permissions:', err);
     } else {
@@ -110,7 +110,7 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
     fs.mkdirSync(processedDir);
   }
 
-  fs.chmod('E:/webdev/project/mainProject/majorproject/processed_images', 0o777, (err) => {
+  fs.chmod(__dirname + '/processed_images', 0o777, (err) => {
     if (err) {
       console.error('Error changing directory permissions:', err);
     } else {
@@ -244,7 +244,7 @@ app.get('/download_all', (req, res) => {
     fs.mkdirSync(zipFolder);
   }
 
-  fs.chmod('E:/webdev/project/mainProject/majorproject/zipFolder', 0o777, (err) => {
+  fs.chmod(__dirname + '/zipFolder', 0o777, (err) => {
     if (err) {
       console.error('Error changing directory permissions:', err);
     } else {
