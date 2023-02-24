@@ -2,7 +2,7 @@ const express = require("express");
 const multer = require('multer');
 const sharp = require('sharp');
 
-
+const archiver = require("archiver");
 
 var width;
 var format;
@@ -25,6 +25,8 @@ var MoveTop;
 var redValue;
 var greenValue;
 var blueValue;
+
+
 
 
 const imageSize = require('image-size');
@@ -88,6 +90,16 @@ app.get("/", (req, res) => {
 });
 
 app.post('/processed_images',upload.single('file'),(req,res) => {
+  let index = 1;
+  const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
+
+  // create directory for processed images if it doesn't exist
+  if (!fs.existsSync(processedDir)) {
+    fs.mkdirSync(processedDir);
+  }
 
      format = req.body.format;
      width = parseInt(req.body.width);
@@ -192,13 +204,36 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
 
         if(redValue,greenValue,blueValue,req,res){
           tintImage( redValue,greenValue,blueValue,req,res);
-          console.log( tintImage( redValue,greenValue,blueValue))
+          console.log(redValue,greenValue,blueValue)
 
         }
 
-
        }
 })
+
+// download all processed images as a zip file
+app.get('/download_all', (req, res) => {
+  const processedDir = __dirname + '/processed_images';
+  const zipFilePath = __dirname + '/processed_images.zip';
+
+  // create a zip file of all images in the processed_images directory
+  const archive = archiver('zip', { zlib: { level: 9 } });
+  archive.directory(processedDir, false);
+  archive.pipe(fs.createWriteStream(zipFilePath));
+  archive.finalize();
+
+  // send the zip file to the client for download
+  res.download(zipFilePath, (err) => {
+    if (err) {
+      console.error('Error downloading file:', err);
+    } else {
+      console.log('File download successful');
+      // delete the zip file from the server after sending it to the client
+      fs.unlinkSync(zipFilePath);
+    }
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`App is listening on Port ${PORT}`);
 });
@@ -206,13 +241,46 @@ app.listen(PORT, () => {
 function resizeImage(width,height,req,res){
 
     if (req.file) {
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+
     let index = 1;
-      outputFilePath = `${index}output.${format}`;
+    //   outputFilePath = `${index}output.${format}`;
+    const filePath = req.file.path;
+    const processedDir = __dirname + '/processed_images';
+    const processedFileName = 'processed_image' + `${index}output.${format}`;
+    const processedFilePath = processedDir + '/' + processedFileName;
       sharp(req.file.path)
         .resize(width, height)
-        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-          if (err) throw err;
-          res.download(__dirname + '/processed_images/'+ outputFilePath)
+        // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+        //   if (err) throw err;
+        // });
+        .toFile(processedFilePath, (err, info) => {
+          if (err) {
+            console.error('Error processing image:', err);
+            res.status(500).send('Error processing image');
+          } else {
+            console.log('Image processed successfully');
+            // send the processed image back to the client
+            res.sendFile(processedFilePath, (err) => {
+              if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).send('Error sending file');
+              } else {
+                console.log('File sent successfully');
+                // delete the processed image from the server
+                fs.unlinkSync(processedFilePath);
+              }
+            });
+          }
+          // delete the uploaded image from the server
+          fs.unlinkSync(filePath);
         });
     }
   }
@@ -220,109 +288,329 @@ function resizeImage(width,height,req,res){
 
   function convertTograyscale(req,res){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+
     let index = 2;
-   outputFilePath = `${index}output.${format}`;
+  //  outputFilePath = `${index}output.${format}`;
+  const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName ='processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
       sharp(req.file.path)
       .grayscale()
-      .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-        if (err) throw err;
-        res.download(__dirname + '/processed_images/'+ outputFilePath)
-        });
+      // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+      //   if (err) throw err;
+      //   });
+      .toFile(processedFilePath, (err, info) => {
+        if (err) {
+          console.error('Error processing image:', err);
+          res.status(500).send('Error processing image');
+        } else {
+          console.log('Image processed successfully');
+          // send the processed image back to the client
+          res.sendFile(processedFilePath, (err) => {
+            if (err) {
+              console.error('Error sending file:', err);
+              res.status(500).send('Error sending file');
+            } else {
+              console.log('File sent successfully');
+              // delete the processed image from the server
+              fs.unlinkSync(processedFilePath);
+            }
+          });
+        }
+        // delete the uploaded image from the server
+        fs.unlinkSync(filePath);
+      });
     }
   }
 
   function flipImage(req,res){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
     let index = 3;
-   outputFilePath = `${index}output.${format}`;
+  //  outputFilePath = `${index}output.${format}`;
+  const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
       sharp(req.file.path)
       .flip()
-      .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-        if (err) throw err;
-        res.download(__dirname + '/processed_images/'+ outputFilePath)
-        });
+      // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+      //   if (err) throw err;
+      //   });
+      .toFile(processedFilePath, (err, info) => {
+        if (err) {
+          console.error('Error processing image:', err);
+          res.status(500).send('Error processing image');
+        } else {
+          console.log('Image processed successfully');
+          // send the processed image back to the client
+          res.sendFile(processedFilePath, (err) => {
+            if (err) {
+              console.error('Error sending file:', err);
+              res.status(500).send('Error sending file');
+            } else {
+              console.log('File sent successfully');
+              // delete the processed image from the server
+              fs.unlinkSync(processedFilePath);
+            }
+          });
+        }
+        // delete the uploaded image from the server
+        fs.unlinkSync(filePath);
+      });
     }
   }
   function flopImage(req,res){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
     let index = 4;
-   outputFilePath = `${index}output.${format}`;
+  //  outputFilePath = `${index}output.${format}`;
+  const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
       sharp(req.file.path)
       .flop()
-      .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-        if (err) throw err;
-        res.download(__dirname + '/processed_images/'+ outputFilePath)
-        });
+      // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+      //   if (err) throw err;
+      //   });
+      .toFile(processedFilePath, (err, info) => {
+        if (err) {
+          console.error('Error processing image:', err);
+          res.status(500).send('Error processing image');
+        } else {
+          console.log('Image processed successfully');
+          // send the processed image back to the client
+          res.sendFile(processedFilePath, (err) => {
+            if (err) {
+              console.error('Error sending file:', err);
+              res.status(500).send('Error sending file');
+            } else {
+              console.log('File sent successfully');
+              // delete the processed image from the server
+              fs.unlinkSync(processedFilePath);
+            }
+          });
+        }
+        // delete the uploaded image from the server
+        fs.unlinkSync(filePath);
+      });
     }
   }
 
   function blurImage(blurValue,req,res){
-
-    if(req.file){
       if(req.file){
+        var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
         let index = 5;
-       outputFilePath = `${index}output.${format}`;
+      //  outputFilePath = `${index}output.${format}`;
+      const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
           sharp(req.file.path)
           .blur(blurValue)
-          .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-            if (err) throw err;
-            res.download(__dirname + '/processed_images/'+ outputFilePath)
-            });
+          // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+          //   if (err) throw err;
+          //   });
+          .toFile(processedFilePath, (err, info) => {
+            if (err) {
+              console.error('Error processing image:', err);
+              res.status(500).send('Error processing image');
+            } else {
+              console.log('Image processed successfully');
+              // send the processed image back to the client
+              res.sendFile(processedFilePath, (err) => {
+                if (err) {
+                  console.error('Error sending file:', err);
+                  res.status(500).send('Error sending file');
+                } else {
+                  console.log('File sent successfully');
+                  // delete the processed image from the server
+                  fs.unlinkSync(processedFilePath);
+                }
+              });
+            }
+            // delete the uploaded image from the server
+            fs.unlinkSync(filePath);
+          });
     }
   }
-}
+
 
 function sharpenImage(sharpenValue,req,res){
-
-  if(req.file){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
       let index = 6;
-     outputFilePath = `${index}output.${format}`;
+    //  outputFilePath = `${index}output.${format}`;
+    const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
         sharp(req.file.path)
         .sharpen(sharpenValue)
-        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-          if (err) throw err;
-          res.download(__dirname + '/processed_images/'+ outputFilePath)
-          });
+        // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+        //   if (err) throw err;
+        //   });
+        .toFile(processedFilePath, (err, info) => {
+          if (err) {
+            console.error('Error processing image:', err);
+            res.status(500).send('Error processing image');
+          } else {
+            console.log('Image processed successfully');
+            // send the processed image back to the client
+            res.sendFile(processedFilePath, (err) => {
+              if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).send('Error sending file');
+              } else {
+                console.log('File sent successfully');
+                // delete the processed image from the server
+                fs.unlinkSync(processedFilePath);
+              }
+            });
+          }
+          // delete the uploaded image from the server
+          fs.unlinkSync(filePath);
+        });
   }
-}
 }
 
 function rotateImage(rotateAngle,req,res){
-
-  if(req.file){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
       let index = 7;
-     outputFilePath = `${index}output.${format}`;
+    //  outputFilePath = `${index}output.${format}`;
+    const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
         sharp(req.file.path)
         .rotate(rotateAngle)
-        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-          if (err) throw err;
-          res.download(__dirname + '/processed_images/'+ outputFilePath)
-          });
+        // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+        //   if (err) throw err;
+        //   });
+        .toFile(processedFilePath, (err, info) => {
+          if (err) {
+            console.error('Error processing image:', err);
+            res.status(500).send('Error processing image');
+          } else {
+            console.log('Image processed successfully');
+            // send the processed image back to the client
+            res.sendFile(processedFilePath, (err) => {
+              if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).send('Error sending file');
+              } else {
+                console.log('File sent successfully');
+                // delete the processed image from the server
+                fs.unlinkSync(processedFilePath);
+              }
+            });
+          }
+          // delete the uploaded image from the server
+          fs.unlinkSync(filePath);
+        });
   }
-}
 }
 
 
 function cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,res){
-  if(req.file){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
       let index = 8;
-     outputFilePath = `${index}output.${format}`;
+    //  outputFilePath = `${index}output.${format}`;
+    const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
         sharp(req.file.path)
         .extract({left: LCroppingSpace, width: CroppedWidth, height: CroppedHeight, top: TCroppingSpace})
-        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-          if (err) throw err;
-          res.download(__dirname + '/processed_images/'+ outputFilePath)
-          });
+        // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+        //   if (err) throw err;
+        //   });
+        .toFile(processedFilePath, (err, info) => {
+          if (err) {
+            console.error('Error processing image:', err);
+            res.status(500).send('Error processing image');
+          } else {
+            console.log('Image processed successfully');
+            // send the processed image back to the client
+            res.sendFile(processedFilePath, (err) => {
+              if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).send('Error sending file');
+              } else {
+                console.log('File sent successfully');
+                // delete the processed image from the server
+                fs.unlinkSync(processedFilePath);
+              }
+            });
+          }
+          // delete the uploaded image from the server
+          fs.unlinkSync(filePath);
+        });
   }
-}
 }
 
 
 // function addText(InputText,TxtColor,FontSize,MoveLeft,MoveTop,req,res){
-//   if(req.file){
 //     if(req.file){
 //       let index = 9;
 //      outputFilePath = `${index}output.${format}`;
@@ -347,14 +635,25 @@ function cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,
 //           });
 //   }
 // }
-// }
 
 
 function addText(InputText,req,res){
-  if(req.file){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
       let index = 9;
-     outputFilePath = `${index}output.${format}`;
+    //  outputFilePath = `${index}output.${format}`;
+    const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
 
         const txtwidth = 400;
         const txtheight = 100;
@@ -370,25 +669,75 @@ function addText(InputText,req,res){
         const svgBuffer = Buffer.from(svgText);
         sharp(req.file.path)
         .composite([{input: svgBuffer, left: 10, top: 20}])
-        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-          if (err) throw err;
-          res.download(__dirname + '/processed_images/'+ outputFilePath)
-          });
+        // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+        //   if (err) throw err;
+        //   });
+        .toFile(processedFilePath, (err, info) => {
+          if (err) {
+            console.error('Error processing image:', err);
+            res.status(500).send('Error processing image');
+          } else {
+            console.log('Image processed successfully');
+            // send the processed image back to the client
+            res.sendFile(processedFilePath, (err) => {
+              if (err) {
+                console.error('Error sending file:', err); 
+                res.status(500).send('Error sending file');
+              } else {
+                console.log('File sent successfully');
+                // delete the processed image from the server
+                fs.unlinkSync(processedFilePath);
+              }
+            });
+          }
+          // delete the uploaded image from the server
+          fs.unlinkSync(filePath);
+        });
   }
-}
 }
 
 function tintImage( redValue,greenValue,blueValue,req,res){
-  if(req.file){
     if(req.file){
+      var dir = "public";
+      var subDirectory = "public/uploads";
+
+    if (!fs.existsSync(dir)) {
+       fs.mkdirSync(dir);
+
+       fs.mkdirSync(subDirectory);
+     }
+      
       let index = 10;
-     outputFilePath = `${index}output.${format}`;
+    //  outputFilePath = `${index}output.${format}`;
+    const filePath = req.file.path;
+  const processedDir = __dirname + '/processed_images';
+  const processedFileName = 'processed_image' + `${index}output.${format}`;
+  const processedFilePath = processedDir + '/' + processedFileName;
         sharp(req.file.path)
         .tint({r: redValue, g: greenValue, b: blueValue})
-        .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
-          if (err) throw err;
-          res.download(__dirname + '/processed_images/'+ outputFilePath)
-          });
+        // .toFile(__dirname + '/processed_images/'+ outputFilePath , (err, info) => {
+        //   if (err) throw err;
+        //   });
+        .toFile(processedFilePath, (err, info) => {
+          if (err) {
+            console.error('Error processing image:', err);
+            res.status(500).send('Error processing image');
+          } else {
+            console.log('Image processed successfully');
+            // send the processed image back to the client
+            res.sendFile(processedFilePath, (err) => {
+              if (err) {
+                console.error('Error sending file:', err);
+                res.status(500).send('Error sending file');
+              } else {
+                console.log('File sent successfully');
+                // delete the processed image from the server
+                fs.unlinkSync(processedFilePath);
+              }
+            });
+          }
+          // delete the uploaded image from the server
+          fs.unlinkSync(filePath);
+        });
   }
-}
 }
