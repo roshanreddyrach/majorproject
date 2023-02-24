@@ -289,21 +289,21 @@ function resizeImage(width,height,req,res){
           } else {
             console.log('resizeImage processed successfully');
             // send the processed image back to the client
-            res.sendFile(processedFilePath, (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
+            // res.sendFile(processedFilePath, (err) => {
+            //   if (err) {
+            //     console.error('Error sending file:', err);
+            //     res.status(500).send('Error sending file');
+            //   } else {
                 console.log('File sent successfully');
                 // delete the processed image from the server
-                fs.unlinkSync(processedFilePath);
+                // fs.unlinkSync(processedFilePath);
               }
             });
           }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
-        });
-    }
+        // });
+    // }
   }
 
 
@@ -336,16 +336,16 @@ function resizeImage(width,height,req,res){
         } else {
           console.log('grayscaleImage processed successfully');
           // send the processed image back to the client
-          res.sendFile(processedFilePath, (err) => {
-            if (err) {
-              console.error('Error sending file:', err);
-              res.status(500).send('Error sending file');
-            } else {
+          // res.sendFile(processedFilePath, (err) => {
+          //   if (err) {
+          //     console.error('Error sending file:', err);
+          //     res.status(500).send('Error sending file');
+          //   } else {
               console.log('File sent successfully');
-              // delete the processed image from the server
-              fs.unlinkSync(processedFilePath);
-            }
-          });
+          //     delete the processed image from the server
+          //     fs.unlinkSync(processedFilePath);
+          //   }
+          // });
         }
         // delete the uploaded image from the server
         // fs.unlinkSync(filePath);
@@ -381,21 +381,21 @@ function resizeImage(width,height,req,res){
         } else {
           console.log('flipImage processed successfully');
           // send the processed image back to the client
-          res.sendFile(processedFilePath, (err) => {
-            if (err) {
-              console.error('Error sending file:', err);
-              res.status(500).send('Error sending file');
-            } else {
+          // res.sendFile(processedFilePath, (err) => {
+          //   if (err) {
+          //     console.error('Error sending file:', err);
+          //     res.status(500).send('Error sending file');
+          //   } else {
               console.log('File sent successfully');
               // delete the processed image from the server
-              fs.unlinkSync(processedFilePath);
+              // fs.unlinkSync(processedFilePath);
             }
           });
         }
         // delete the uploaded image from the server
         // fs.unlinkSync(filePath);
-      });
-    }
+      // });
+    // }
   }
   function flopImage(req,res){
     if(req.file){
@@ -426,11 +426,11 @@ function resizeImage(width,height,req,res){
         } else {
           console.log('flopImage processed successfully');
           // send the processed image back to the client
-          res.sendFile(processedFilePath, (err) => {
-            if (err) {
-              console.error('Error sending file:', err);
-              res.status(500).send('Error sending file');
-            } else {
+          // res.sendFile(processedFilePath, (err) => {
+          //   if (err) {
+          //     console.error('Error sending file:', err);
+          //     res.status(500).send('Error sending file');
+          //   } else {
               console.log('File sent successfully');
               // delete the processed image from the server
               fs.unlinkSync(processedFilePath);
@@ -439,8 +439,8 @@ function resizeImage(width,height,req,res){
         }
         // delete the uploaded image from the server
         // fs.unlinkSync(filePath);
-      });
-    }
+      // });
+    // }
   }
 
   function blurImage(blurValue,req,res){
@@ -472,21 +472,21 @@ function resizeImage(width,height,req,res){
             } else {
               console.log('blurImage processed successfully');
               // send the processed image back to the client
-              res.sendFile(processedFilePath, (err) => {
-                if (err) {
-                  console.error('Error sending file:', err);
-                  res.status(500).send('Error sending file');
-                } else {
+              // res.sendFile(processedFilePath, (err) => {
+              //   if (err) {
+              //     console.error('Error sending file:', err);
+              //     res.status(500).send('Error sending file');
+              //   } else {
                   console.log('File sent successfully');
                   // delete the processed image from the server
-                  fs.unlinkSync(processedFilePath);
+                  // fs.unlinkSync(processedFilePath);
                 }
               });
             }
             // delete the uploaded image from the server
             // fs.unlinkSync(filePath);
-          });
-    }
+          // });
+    // }
   }
 
 
@@ -519,21 +519,21 @@ function sharpenImage(sharpenValue,req,res){
           } else {
             console.log('sharpenImage processed successfully');
             // send the processed image back to the client
-            res.sendFile(processedFilePath, (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
+            // res.sendFile(processedFilePath, (err) => {
+            //   if (err) {
+            //     console.error('Error sending file:', err);
+            //     res.status(500).send('Error sending file');
+            //   } else {
                 console.log('File sent successfully');
                 // delete the processed image from the server
-                fs.unlinkSync(processedFilePath);
+                // fs.unlinkSync(processedFilePath);
               }
             });
           }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
-        });
-  }
+        // });
+  // }
 }
 
 function rotateImage(rotateAngle,req,res){
@@ -565,21 +565,21 @@ function rotateImage(rotateAngle,req,res){
           } else {
             console.log('rotateImage processed successfully');
             // send the processed image back to the client
-            res.sendFile(processedFilePath, (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
+            // res.sendFile(processedFilePath, (err) => {
+            //   if (err) {
+            //     console.error('Error sending file:', err);
+            //     res.status(500).send('Error sending file');
+            //   } else {
                 console.log('File sent successfully');
                 // delete the processed image from the server
-                fs.unlinkSync(processedFilePath);
+                // fs.unlinkSync(processedFilePath);
               }
             });
           }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
-        });
-  }
+        // });
+  // }
 }
 
 
@@ -612,21 +612,21 @@ function cropImage(LCroppingSpace,CroppedWidth,CroppedHeight,TCroppingSpace,req,
           } else {
             console.log('cropImage processed successfully');
             // send the processed image back to the client
-            res.sendFile(processedFilePath, (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
+            // res.sendFile(processedFilePath, (err) => {
+            //   if (err) {
+            //     console.error('Error sending file:', err);
+            //     res.status(500).send('Error sending file');
+            //   } else {
                 console.log('File sent successfully');
                 // delete the processed image from the server
-                fs.unlinkSync(processedFilePath);
+                // fs.unlinkSync(processedFilePath);
               }
             });
           }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
-        });
-  }
+        // });
+  // }
 }
 
 
@@ -699,21 +699,21 @@ function addText(InputText,req,res){
           } else {
             console.log('addtext Image processed successfully');
             // send the processed image back to the client
-            res.sendFile(processedFilePath, (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
+            // res.sendFile(processedFilePath, (err) => {
+            //   if (err) {
+            //     console.error('Error sending file:', err);
+            //     res.status(500).send('Error sending file');
+            //   } else {
                 console.log('File sent successfully');
                 // delete the processed image from the server
-                fs.unlinkSync(processedFilePath);
+                // fs.unlinkSync(processedFilePath);
               }
             });
           }
           // delete the uploaded image from the server
           // fs.unlinkSync(filePath);
-        });
-  }
+        // });
+  // }
 }
 
 function tintImage( redValue,greenValue,blueValue,req,res){
@@ -745,19 +745,19 @@ function tintImage( redValue,greenValue,blueValue,req,res){
           } else {
             console.log('tintImage processed successfully');
             // send the processed image back to the client
-            res.sendFile(processedFilePath, (err) => {
-              if (err) {
-                console.error('Error sending file:', err);
-                res.status(500).send('Error sending file');
-              } else {
+            // res.sendFile(processedFilePath, (err) => {
+            //   if (err) {
+            //     console.error('Error sending file:', err);
+            //     res.status(500).send('Error sending file');
+            //   } else {
                 console.log('File sent successfully');
                 // delete the processed image from the server
-                fs.unlinkSync(processedFilePath);
+                // fs.unlinkSync(processedFilePath);
               }
             });
           }
           // delete the uploaded image from the server
-          fs.unlinkSync(filePath);
-        });
-  }
+          // fs.unlinkSync(filePath);
+        // });
+  // }
 }
