@@ -757,7 +757,7 @@ function tintImage( redValue,greenValue,blueValue,req,res){
             });
           }
           // delete the uploaded image from the server
-          // fs.unlinkSync(filePath);
+          fs.unlinkSync(filePath);
         });
     }
   }
