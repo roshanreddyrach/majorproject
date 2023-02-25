@@ -259,18 +259,18 @@ app.get('/download_all', (req, res) => {
     fs.mkdirSync(processedDir);
   }
 
-  if (!fs.existsSync(zipFilePath)) {
-    console.log('Creating processed_images.zip file...');
+//   if (!fs.existsSync(zipFilePath)) {
+//     console.log('Creating processed_images.zip file...');
 
-  // create a zip file of all images in the processed_images directory
-  const archive = archiver('zip', { zlib: { level: 9 } });
-  archive.directory(processedDir, false);
-  archive.pipe(fs.createWriteStream(zipFilePath));
-  archive.finalize();
-  console.log('processed_images.zip file created.');
-} else {
-  console.log('processed_images.zip file already exists.');
-}
+//   // create a zip file of all images in the processed_images directory
+//   const archive = archiver('zip', { zlib: { level: 9 } });
+//   archive.directory(processedDir, false);
+//   archive.pipe(fs.createWriteStream(zipFilePath));
+//   archive.finalize();
+//   console.log('processed_images.zip file created.');
+// } else {
+//   console.log('processed_images.zip file already exists.');
+// }
   // send the zip file to the client for download
   res.download(zipFilePath, (err) => {
     if (err) {
@@ -790,6 +790,33 @@ function tintImage( redValue,greenValue,blueValue,req,res){
         //   if (err) throw err;
         //   });
         .toFile(processedFilePath, (err, info) => {
+          const zipFolder = __dirname +'/zipFolder'
+          if (!fs.existsSync(zipFolder)) {
+            fs.mkdirSync(zipFolder);
+          }
+          const processedDir = __dirname + '/processed_images';
+          const zipFilePath = __dirname + '/zipFolder/processed_images.zip';
+        
+          if (!fs.existsSync(zipFilePath)) {
+            console.log('Creating processed_images.zip file...');
+        
+          // create a zip file of all images in the processed_images directory
+          const archive = archiver('zip', { zlib: { level: 9 } });
+          archive.directory(processedDir, false);
+          archive.pipe(fs.createWriteStream(zipFilePath));
+          archive.finalize();
+          console.log('processed_images.zip file created.');
+        } else {
+          console.log('processed_images.zip file already exists.');
+        }
+        
+          fs.chmod(__dirname + '/zipFolder', 0o777, (err) => {
+            if (err) {
+              console.error('Error changing directory permissions:', err);
+            } else {
+              console.log('Directory permissions changed successfully');
+            }
+          });
           if (err) {
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
@@ -840,7 +867,7 @@ function tintImage( redValue,greenValue,blueValue,req,res){
         if (err) {
           console.error('Error processing image:', err);
           res.status(500).send('Error processing image');
-        } 
+        }
         else {
           console.log('Image processed successfully');
           // send the processed image back to the client
