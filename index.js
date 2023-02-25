@@ -2,9 +2,9 @@
 const express = require("express");
 const multer = require('multer');
 const sharp = require('sharp');
-const archiver = require("archiver");
+// const archiver = require("archiver");
 const imageSize = require('image-size');
-
+const AdmZip = require("adm-zip");
 
 // in built modules
 const bodyParser = require('body-parser');
@@ -235,37 +235,12 @@ app.post('/processed_images',upload.single('file'),(req,res) => {
 // download all processed images as a zip file
 app.get('/download_all', (req, res) => {
 
- const zipFolder = __dirname +'/zipFolder'
 
-   if(fs.existsSync(zipFolder)){
-     fs.chmod(__dirname + '/zipFolder', 0o777, (err) => {
-      if (err) {
-        console.error('Error changing directory permissions:', err);
-      } else {
-        console.log(' zipFolder Directory permissions changed successfully');
-      }
-    });
-   }
 
   const processedDir = __dirname + '/processed_images';
-  const zipFilePath = __dirname + '/zipFolder/processed_images.zip';
+  const zipFilePath = __dirname + '/processed_images.zip';
 
-
-
-//   if (!fs.existsSync(zipFilePath)) {
-//     console.log('Creating processed_images.zip file...');
-
-//   // create a zip file of all images in the processed_images directory
-//   const archive = archiver('zip', { zlib: { level: 9 } });
-//   archive.directory(processedDir, false);
-//   archive.pipe(fs.createWriteStream(zipFilePath));
-//   archive.finalize();
-//   console.log('processed_images.zip file created.');
-// } else {
-//   console.log('processed_images.zip file already exists.');
-// }
-
-  // send the zip file to the client for download
+// send the zip file to the client for download
   res.download(zipFilePath, (err) => {
     if (err) {
       console.error('Error downloading file:', err);
@@ -609,36 +584,6 @@ function tintImage( redValue,greenValue,blueValue,req,res){
             console.error('Error processing image:', err);
             res.status(500).send('Error processing image');
           }
-
-          const zipFolder = __dirname +'/zipFolder'
-
-
-          if(fs.existsSync(zipFolder)){
-
-            fs.chmod(__dirname + '/zipFolder', 0o777, (err) => {
-              if (err) {
-                console.error('Error changing directory permissions:', err);
-              } else {
-                console.log(' zipFolder Directory permissions changed successfully');
-              }
-            });
-          }
-
-          const processedDir = __dirname + '/processed_images';
-          const zipFilePath = __dirname + '/zipFolder/processed_images.zip';
-
-          if (!fs.existsSync(zipFilePath)) {
-            console.log('Creating processed_images.zip file...');
-
-          // create a zip file of all images in the processed_images directory
-          const archive = archiver('zip', { zlib: { level: 9 } });
-          archive.directory(processedDir, false);
-          archive.pipe(fs.createWriteStream(zipFilePath));
-          archive.finalize();
-          console.log('processed_images.zip file created.');
-          } else {
-          console.log('processed_images.zip file already exists.');
-          }
         });
       }
     }
@@ -671,6 +616,9 @@ function tintImage( redValue,greenValue,blueValue,req,res){
         }else {
           console.log('Image processed successfully');
 
+          // creating the zip file
+          createZipArchive();
+
           // send the processed image message back to the client
           res.sendFile(__dirname + '/imageProcessed.html', (err) => {
 
@@ -690,3 +638,17 @@ function tintImage( redValue,greenValue,blueValue,req,res){
       });
   }
 }
+
+async function createZipArchive() {
+  try {
+    const processedDir = __dirname + '/processed_images';
+    const zip = new AdmZip();
+    const outputFile = "processed_images.zip";
+    zip.addLocalFolder(processedDir);
+    zip.writeZip(outputFile);
+    console.log(`Created ${outputFile} successfully`);
+  } catch (e) {
+    console.log(`Something went wrong. ${e}`);
+  }
+}
+
