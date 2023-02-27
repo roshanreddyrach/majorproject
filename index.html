@@ -8,122 +8,226 @@
       rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     /> -->
-    <link rel="stylesheet" href="style.css">
+    <style>
+      *{
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+  list-style: none;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  margin-top: 0;
+  font-size: 36px;
+  font-weight: bold;
+  text-align: center;
+}
+
+form {
+  margin-top: 40px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+input[type="number"],
+input[type="text"] {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  margin-right: 5px;
+  cursor: pointer;
+
+}
+
+button[type="submit"] {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #2196F3;
+  color: #fff;
+  border-radius: 3px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Specific styles for the form */
+form > table > tbody > tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+form > table > tbody > tr:hover {
+  background-color: #ddd;
+}
+
+form > table > tbody > tr > td:first-child {
+  font-weight: bold;
+  width: 30%;
+}
+
+form > table > tbody > tr > td:last-child {
+  width: 70%;
+}
+
+    </style>
   </head>
   <body>
-    <div class="container">
+     <div class="container">
       <br /><br />
-      <h1 class="text-center">Image Processing</h1>
+    <h1 style="background-color:lightgrey";>Image processing</h1>
       <br />
       <form action="/processed_images" method="post" enctype="multipart/form-data">
-        <div class="form-group">
-          <input
-            type="file"
-            name="file"
-            multiple
-            required
-            class="form-control"
-          />
-        </div>
-        <span>Choose Format:</span>
-        <label class="radio-inline">
-          <input type="radio" name="format" value="png" checked />png</label>
-        <label class="radio-inline">
-          <input type="radio" name="format" value="jpg" />jpg</label>
-        <label class="radio-inline">
-          <input type="radio" name="format" value="webp" />webp</label> <br />
-        <span>Resize:</span>
-        <div class="form-group">
-          <label for="width">width</label>
-          <input class="form-control" type="number" name="width" id="" />
-        </div> <br />
-        <div class="form-group">
-          <label for="height">height</label>
-          <input class="form-control" type="number" name="height" id="" />
-        </div>
-        <span>Choose Operation:</span>
-        <label class="radio-inline">
+	  <table cellpadding="8px" cellspacing="0">
+	  <tr>
+	  <td>File</td>
+	  <td><input type="file" name="file" multiple required /></td>
+	  </tr>
+	  <tr>
+	  <td>Choose Format</td>
+	  <td>
+      <input type="radio" name="format" value="png" checked /> png&nbsp;
+      <input type="radio" name="format" value="jpg" />jpg &nbsp;
+      <input type="radio" name="format" value="webp" />webp&nbsp;</td>
+	  </tr>
+	  <tr>
+	  <td>Resizing</td>
+	  <td>
+		<input type="number" name="width" placeholder="Width"/>
+		<input type="number" name="height" placeholder="Height"/></td>
+	  </tr>
+	  <tr>
+	  <td>Choose Operation:</td>
+	  <td>
           <input id="grayscale" type="checkbox" name="grayscale" value="true"  />grayscale</label>
-        <label class="radio-inline">
-          <input id="flip" type="radio" name="flipflop" value="flip" />flip</label>
-        <label class="radio-inline">
-          <input id="flop" type="radio" name="flipflop" value="flop" />flop</label> <br />
-       <span>Blur:</span>
-        <div class="form-group">
-          <label for="Bvalue">value</label>
-          <input class="form-control" type="number" name="Bvalue" id="" />
-        </div> <br />
-        <spam>Sharpen:</spam>
-        <div class="form-group">
-          <label for="Svalue">value</label>
+		  <input id="flip" type="radio" name="flipflop" value="flip" />flip</label>
+          <input id="flop" type="radio" name="flipflop" value="flop" />flop</label> </td>
+	  </tr>
+	  <tr>
+	  <td>Blur</td>
+	  <td>
+          <label for="Bvalue"></label>
+          <input class="form-control" type="number" name="Bvalue" id="" /> </td>
+	  </tr>
+	  <tr>
+	  <td>Sharpen</td>
+	  <td>
+          <label for="Svalue"></label>
           <input class="form-control" type="number" name="Svalue" id="" />
-        </div> <br />
-        <span>Rotate:</span>
-        <div class="form-group">
-          <label for="angle">angle</label>
-          <input class="form-control" type="number" name="angle" id="" />
-        </div> <br />
-        <span>croping:</span>
-        <div class="form-group">
-          <label for="left">Left Cropping Space</label>
-          <input type="number" name="LeftCropingSpace" id="" />
-        </div> <br />
-        <div class="form-group">
-          <label for="croppedWidth">Cropped width</label>
-          <input type="number" name="croppedWidth" id="" />
-        </div> <br />
-        <div class="form-group">
-          <label for="croppedHeight">Cropped height</label>
-          <input type="number" name="croppedHeight" id="" />
-        </div> <br />
-        <div class="form-group">
-          <label for="top">Top Cropping Space</label>
-          <input type="number" name="TopCropingSpace" id="" />
-        </div> <br />
-        <span>Text overlay on image :</span>
-        <div class="form-group">
-          <label for="inputText">Text Field</label>
-          <input type="text" name="inputText" id="">
-        </div> <br />
-        <!-- <div class="form-group">
-          <label for="txtColor">Text Color</label>
-          <input type="text" name="txtColor" id="">
-        </div>
-        <div class="form-group">
-          <label for="fontSize">fontSize</label>
-          <input type="number" name="fontSize" id="" />
-        </div>
-        <div class="form-group">
-          <label for="moveLeft">move from left</label>
-          <input type="number" name="moveLeft" id="">
-        </div>
-        <div class="form-group">
-          <label for="moveTop">move from top</label>
-          <input type="number" name="moveTop" id="">
-        </div> -->
-        <span>Tinting(manipulating rgb values)</span>
-        <div class="form-group">
-          <label for="rvalue">red value</label>
-          <input type="number" name="rvalue" id="">
-
-          <label for="gvalue">green value</label>
-          <input type="number" name="gvalue" id="">
-
-          <label for="bvalue">blue value</label>
-          <input type="number" name="bvalue" id="">
-        </div> <br />
-
-        <span>confirm the techniques:</span>
-        <label class="radio-inline">
-          <input id="dummy" type="checkbox" name="dummy" value="true"  /></label>
-
-        <div class="form-group">
-          <button class="btn btn-danger btn-block">Process the Image</button>
-          <button><a href="/download_all">Download All Processed Images</a></button>
-          <span>Download after processing the images(if the zip file is not downloaded then click the button again)</span>
-        </div>
-      </form>
+        </td>
+	  </tr>
+	  <tr>
+	  <td>Rotate (degree)</td>
+	  <td> <label for="angle"></label>
+          <input class="form-control" type="number" name="angle" id="" /></td>
+	  </tr>
+	  <tr>
+	  <td colspan="2"><u>Croping</u></td>
+	  </tr>
+	  <tr>
+	  <td>Left Cropping Space</td>
+	  <td><input type="number" name="LeftCropingSpace" id="" /></td>
+	  </tr>
+	  <tr>
+          <td><label for="croppedWidth">Cropped width</label></td>
+          <td><input type="number" name="croppedWidth" id="" /></td>
+         </tr>
+		 <tr>
+          <td><label for="croppedHeight">Cropped height</label></td>
+          <td><input type="number" name="croppedHeight" id="" /></td>
+         </tr>
+		 <tr>
+          <td><label for="top">Top Cropping Space</label></td>
+          <td><input type="number" name="TopCropingSpace" id="" /></td>
+		  </tr>
+	  <tr>
+	  <td colspan="2"><u>Text overlay on image</u></td>
+	  </tr>
+	  <tr>
+      <td><label for="inputText">Text Field</label></td>
+      <td><input type="text" name="inputText" id=""></td>
+	  </tr>
+	  <!-- <tr>
+      <td>  <label for="txtColor">Text Color</label></td>
+      <td><input type="text" name="txtColor" id=""> </td>
+	  </tr>
+	  <tr>
+      <td><label for="fontSize">fontSize</label></td>
+      <td><input type="number" name="fontSize" id="" /></td>
+	  </tr>
+	  <tr>
+      <td><label for="moveLeft">move from left</label>
+      <td><input type="number" name="moveLeft" id=""></td>
+	  </tr> -->
+	  <!-- <tr>
+      <td> <label for="moveTop">move from top</label></td>
+      <td><input type="number" name="moveTop" id=""></td>
+	  </tr> -->
+	 <tr>
+	  <td colspan="2"><u>Tinting </u>(manipulating rgb values / max. rgb value is 255)</td>
+	  </tr>
+	  <tr>
+      <td> <label for="rvalue">red value</label></td>
+      <td><input type="number" name="rvalue" id=""></td>
+	  </tr>
+	  <tr>
+      <td><label for="gvalue">green value</label></td>
+      <td><input type="number" name="gvalue" id=""></td>
+	  </tr>
+	  <tr>
+      <td> <label for="bvalue">blue value</label></td>
+      <td><input type="number" name="bvalue" id=""></td>
+	  </tr>
+	  <tr>
+	  <td colspan="2">Confirm the techniques
+	  <input id="dummy" type="checkbox" name="dummy" value="true"  /></label><br />
+	  </td>
+	  </tr>
+	   <tr>
+	  <td colspan="2"><button class="btn btn-danger btn-block">Process the Image</button><br />
+	  </td>
+	  </tr>
+	   <tr>
+	  <td colspan="2"><button><a href="/download_all">Download All Processed Images</a></button><br />
+	  </td>
+	  </tr>
+	  </table>
+    </form>
     </div>
   </body>
   <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> -->
+  <hr><div style="float:left;width:100%;margin-left:0%;">
+
+<p style="text-align: center"> &copy;All copy rights reserved for 2023| Contact for more info.</a>
+</div>
 </html>
