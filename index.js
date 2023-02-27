@@ -93,7 +93,7 @@ var storage = multer.diskStorage({
 const PORT = process.env.PORT || 4000;
 
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/home.html");
 });
 
 app.post('/processed_images',upload.single('file'),(req,res) => {
