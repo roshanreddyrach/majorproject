@@ -616,9 +616,6 @@ function tintImage( redValue,greenValue,blueValue,req,res){
         }else {
           console.log('Image processed successfully');
 
-          // creating the zip file
-          createZipArchive();
-
           // send the processed image message back to the client
           res.sendFile(__dirname + '/imageProcessed.html', (err) => {
 
@@ -631,6 +628,8 @@ function tintImage( redValue,greenValue,blueValue,req,res){
               // delete the processed image from the server
               fs.unlinkSync(processedFilePath);
             }
+            // creating the zip file
+             createZipArchive();
           });
         }
         // delete the uploaded image from the server
